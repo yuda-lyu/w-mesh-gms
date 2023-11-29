@@ -104,6 +104,7 @@ function readTopBot(fp, key) {
  * wmg.readGms(fpXyz, fpTop, fpBot, fpMat)
  *     .then((res) => {
  *         console.log(res)
+ *         console.log('finish.')
  *     })
  *     .catch((err) => {
  *         console.log(err)
