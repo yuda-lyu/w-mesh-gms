@@ -1,0 +1,28 @@
+{
+  "name": "w-mesh-gms",
+  "version": "1.0.2",
+  "main": "dist/w-mesh-gms.umd.js",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "wsemi": "^1.7.39"
+  },
+  "devDependencies": {
+    "w-package-tools": "^1.0.70"
+  },
+  "scripts": {
+    "test": "mocha --parallel --timeout 60000 --experimental-modules --es-module-specifier-resolution=node",
+    "deploy": "gh-pages -d docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuda-lyu/w-mesh-gms.git"
+  },
+  "keywords": [
+    "package",
+    "tool",
+    "gms",
+    "nodejs"
+  ],
+  "author": "yuda-lyu(semisphere)",
+  "license": "MIT"
+}
