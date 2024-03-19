@@ -6,6 +6,7 @@ A tool for GMS data.
 [![license](https://img.shields.io/npm/l/w-mesh-gms.svg?style=flat)](https://npmjs.org/package/w-mesh-gms) 
 [![gzip file size](http://img.badgesize.io/yuda-lyu/w-mesh-gms/master/dist/w-mesh-gms.umd.js.svg?compression=gzip)](https://github.com/yuda-lyu/w-mesh-gms)
 [![npm download](https://img.shields.io/npm/dt/w-mesh-gms.svg)](https://npmjs.org/package/w-mesh-gms) 
+[![npm download](https://img.shields.io/npm/dm/w-mesh-gms.svg)](https://npmjs.org/package/w-mesh-gms) 
 [![jsdelivr download](https://img.shields.io/jsdelivr/npm/hm/w-mesh-gms.svg)](https://www.jsdelivr.com/package/npm/w-mesh-gms)
 
 ## Documentation
@@ -13,7 +14,7 @@ To view documentation or get support, visit [docs](https://yuda-lyu.github.io/w-
 
 ## Installation
 ### Using npm(ES6 module):
-> **Note:** w-mesh-gms is mainly dependent on `lodash` and `wsemi`.
+> **Note:** w-mesh-gms is mainly dependent on `lodash-es` and `wsemi`.
 ```alias
 npm i w-mesh-gms
 ```
@@ -22,7 +23,7 @@ npm i w-mesh-gms
 > **Link:** [[dev source code](https://github.com/yuda-lyu/w-mesh-gms/blob/master/g-read.mjs)]
 ```alias
 import fs from 'fs'
-import _ from 'lodash'
+import _ from 'lodash-es'
 import wmg from './src/WMeshGms.mjs'
 
 
