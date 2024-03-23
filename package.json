@@ -1,13 +1,13 @@
 {
   "name": "w-mesh-gms",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/w-mesh-gms.umd.js",
   "dependencies": {
     "lodash-es": "^4.17.21",
-    "wsemi": "^1.7.47"
+    "wsemi": "^1.7.49"
   },
   "devDependencies": {
-    "w-package-tools": "^1.0.73"
+    "w-package-tools": "^1.0.75"
   },
   "scripts": {
     "test": "mocha --parallel --timeout 60000 --experimental-modules --es-module-specifier-resolution=node",

@@ -1,5 +1,4 @@
 import fs from 'fs'
-import _ from 'lodash-es'
 import wmg from './src/WMeshGms.mjs'
 
 
