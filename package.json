@@ -1,6 +1,6 @@
 {
   "name": "w-mesh-gms",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "dist/w-mesh-gms.umd.js",
   "dependencies": {
     "lodash-es": "^4.17.21",

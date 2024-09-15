@@ -325,7 +325,7 @@ async function writeParseCols(cols, funProcLayers) {
         if (!isestr(id) && !isnum(id)) {
             id = cstr(k)
         }
-        id = cstr(k)
+        id = cstr(id)
 
         //X
         let X = get(col, 'x', null)
