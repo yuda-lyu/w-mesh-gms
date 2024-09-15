@@ -446,6 +446,7 @@ async function writeParseCols(cols, funProcLayers) {
  * @param {Object|Array} mnes 輸入數據物件或陣列，輸入物件須包含name、cols，輸入陣列時則各元素為物件(name、cols)
  * @param {String} fpOut 輸入儲存檔案位置字串
  * @param {Object} [opt={}] 輸入設定物件，預設{}
+ * @param {Function} [opt.funProcLayers=null] 輸入交由外部處理分層函數，輸入當前layers並須回傳layers，例如可通過mergeByDepthStartEnd進行同質合併，預設null
  * @return {Promise} 回傳Promise，resolve回傳成功訊息，reject回傳錯誤訊息
  * @example
  *
@@ -525,11 +526,11 @@ async function writeGms(mnes, fpOut, opt = {}) {
     let ct = head
     await pmSeries(mnes, async (v) => {
 
-        //name
-        let name = get(v, 'name', '')
-        if (!isestr(name)) {
-            throw new Error(`invalid name`)
-        }
+        // //name, gms內沒有寫入name之規格
+        // let name = get(v, 'name', '')
+        // if (!isestr(name)) {
+        //     throw new Error(`invalid name`)
+        // }
 
         //cols
         let cols = get(v, 'cols', [])
@@ -537,14 +538,8 @@ async function writeGms(mnes, fpOut, opt = {}) {
             throw new Error(`cols is not an effective array`)
         }
 
-        // //eles
-        // let eles = get(v, 'eles', [])
-        // if (!isearr(eles)) {
-        //     throw new Error(`eles is not an effective array`)
-        // }
-
         //writeParseCols
-        let c = await writeParseCols(name, cols, funProcLayers)
+        let c = await writeParseCols(cols, funProcLayers)
 
         //merge
         ct += c + '\n'
