@@ -4,7 +4,6 @@ A tool for GMS data.
 ![language](https://img.shields.io/badge/language-JavaScript-orange.svg) 
 [![npm version](http://img.shields.io/npm/v/w-mesh-gms.svg?style=flat)](https://npmjs.org/package/w-mesh-gms) 
 [![license](https://img.shields.io/npm/l/w-mesh-gms.svg?style=flat)](https://npmjs.org/package/w-mesh-gms) 
-[![gzip file size](http://img.badgesize.io/yuda-lyu/w-mesh-gms/master/dist/w-mesh-gms.umd.js.svg?compression=gzip)](https://github.com/yuda-lyu/w-mesh-gms)
 [![npm download](https://img.shields.io/npm/dt/w-mesh-gms.svg)](https://npmjs.org/package/w-mesh-gms) 
 [![npm download](https://img.shields.io/npm/dm/w-mesh-gms.svg)](https://npmjs.org/package/w-mesh-gms) 
 [![jsdelivr download](https://img.shields.io/jsdelivr/npm/hm/w-mesh-gms.svg)](https://www.jsdelivr.com/package/npm/w-mesh-gms)

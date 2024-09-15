@@ -21,5 +21,5 @@ wmg.readGms(fpXyz, fpTop, fpBot, fpMat)
         console.log(err)
     })
 
-//node --no-warnings --max-old-space-size=120000 --es-module-specifier-resolution=node g.read.mjs
+//node --no-warnings --max-old-space-size=120000 g.read.mjs
 

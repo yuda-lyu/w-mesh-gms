@@ -2,6 +2,8 @@ import fs from 'fs'
 import get from 'lodash-es/get.js'
 import map from 'lodash-es/map.js'
 import each from 'lodash-es/each.js'
+import size from 'lodash-es/size.js'
+import join from 'lodash-es/join.js'
 import drop from 'lodash-es/drop.js'
 import split from 'lodash-es/split.js'
 import values from 'lodash-es/values.js'
@@ -10,6 +12,14 @@ import max from 'lodash-es/max.js'
 import sep from 'wsemi/src/sep.mjs'
 import cint from 'wsemi/src/cint.mjs'
 import cdbl from 'wsemi/src/cdbl.mjs'
+import cstr from 'wsemi/src/cstr.mjs'
+import isestr from 'wsemi/src/isestr.mjs'
+import iseobj from 'wsemi/src/iseobj.mjs'
+import isearr from 'wsemi/src/isearr.mjs'
+import isnum from 'wsemi/src/isnum.mjs'
+import isfun from 'wsemi/src/isfun.mjs'
+import ispm from 'wsemi/src/ispm.mjs'
+import pmSeries from 'wsemi/src/pmSeries.mjs'
 
 
 function readXyz(fp) {
@@ -304,24 +314,245 @@ async function readGms(fpXyz, fpTop, fpBot, fpMat) {
 }
 
 
+async function writeParseCols(cols, funProcLayers) {
+
+    //rss, 解析cols轉出與生成指定欄位之數據
+    let rss = []
+    await pmSeries(cols, async(col, k) => {
+
+        //id, 須為英文與數字組合, 逗號分隔符號不能用, 其他例如utf8字元不能使用
+        let id = get(col, 'id', null)
+        if (!isestr(id) && !isnum(id)) {
+            id = cstr(k)
+        }
+        id = cstr(k)
+
+        //X
+        let X = get(col, 'x', null)
+        if (!isnum(X)) {
+            throw new Error(`col.x[${X}] is not a number`)
+        }
+        X = cdbl(X)
+
+        //Y
+        let Y = get(col, 'y', null)
+        if (!isnum(Y)) {
+            throw new Error(`col.y[${Y}] is not a number`)
+        }
+        Y = cdbl(Y)
+
+        //Z
+        let Z = get(col, 'z', null)
+        if (!isnum(Z)) {
+            throw new Error(`col.z[${Z}] is not a number`)
+        }
+        Z = cdbl(Z)
+
+        //layers
+        let layers = get(col, 'layers', [])
+        if (!isearr(layers)) {
+            throw new Error(`col.layersis not an effective array`)
+        }
+
+        //rs
+        let rs = []
+        await pmSeries(layers, async (layer, k) => {
+
+            //mat, type
+            let mat = get(layer, 'mat', 0)
+            let type = get(layer, 'type', 0)
+
+            //ds
+            let ds = get(layer, 'depthStart', '')
+            if (!isnum(ds)) {
+                throw new Error(`layers[${k}].depthStart[${ds}] is not a number`)
+            }
+            ds = cdbl(ds)
+
+            //de
+            let de = get(layer, 'depthEnd', '')
+            if (!isnum(de)) {
+                throw new Error(`layers[${k}].depthEnd[${de}] is not a number`)
+            }
+            de = cdbl(de)
+
+            //Z1
+            let Z1 = Z - ds //Z朝上為正, Z-depthStart為往下至樣本頂部深度
+            if (!isnum(Z1)) {
+                throw new Error(`Z1[${Z1}] is not a number`)
+            }
+            Z1 = cdbl(Z1)
+
+            //Z2
+            let Z2 = Z - de //Z朝上為正, Z-depthEnd為往下至樣本底部深度
+            if (!isnum(Z2)) {
+                throw new Error(`Z2[${Z2}] is not a number`)
+            }
+            Z2 = cdbl(Z2)
+
+            //SoilID, HGUID, HorizonID
+            let SoilID = mat
+            let HGUID = mat
+            let HorizonID = type
+
+            //push, 起訖深度depthStart須先轉為朝下為正, 提供給外部funProcLayers處理, 例如使用mergeByDepthStartEnd進行同質合併
+            rs.push({ name: id, X, Y, depthStart: -Z1, depthEnd: -Z2, SoilID, HGUID, HorizonID })
+
+        })
+        // console.log('rs', rs)
+
+        //funProcLayers
+        if (isfun(funProcLayers)) {
+            rs = funProcLayers(rs)
+            if (ispm(rs)) {
+                rs = await rs
+            }
+        }
+
+        //push
+        rss.push(rs)
+
+    })
+
+    //ls, 產生gms所需各列字串數據
+    let ls = []
+    each(rss, (rs) => {
+        each(rs, (v, k) => {
+            let cc = ''
+
+            //各列數據, 起始深度depthStart要再轉朝上為正
+            cc = `${v.name},${v.X},${v.Y},${-v.depthStart},${v.SoilID},${v.HGUID},${v.HorizonID}` + '\n'
+            ls.push(cc)
+
+            //自動補孔底深度樣本, 結束度要再轉朝上為正
+            if (k === size(rs) - 1) {
+                cc = `${v.name},${v.X},${v.Y},${-v.depthEnd},${v.SoilID},${v.HGUID},${v.HorizonID}` + '\n'
+                ls.push(cc)
+            }
+
+        })
+    })
+
+    //c
+    let c = join(ls, '')
+
+    return c
+}
+
+
 /**
  * 輸出數據至GMS檔案
  *
- * @param {String} fp 輸入檔案位置字串
- * @param {Array} data 輸入數據陣列，為mat或ltdt格式
+ * @param {Object|Array} mnes 輸入數據物件或陣列，輸入物件須包含name、cols，輸入陣列時則各元素為物件(name、cols)
+ * @param {String} fpOut 輸入儲存檔案位置字串
  * @param {Object} [opt={}] 輸入設定物件，預設{}
- * @param {String} [opt.mode='ltdt'] 輸入數據格式字串，可選ltdt或mat，預設ltdt
- * @param {Array} [opt.keys=[]] 輸入指定欲輸出鍵值陣列，預設[]
- * @param {Object} [opt.kphead={}] 輸入指定鍵值轉換物件，預設{}
  * @return {Promise} 回傳Promise，resolve回傳成功訊息，reject回傳錯誤訊息
  * @example
  *
-
+ * let name = 'abc'
+ * let cols = [...]
+ * let fpOut = '{path of file}'
+ *
+ * console.log('writing...')
+ * writeGms({ name, cols }, fpOut)
+ *     .then((r) => {
+ *         console.log('finish.')
+ *     })
+ *     .catch((err) => {
+ *         console.log(err)
+ *     })
  *
  */
-async function writeGms(fp, nodes, eles, opt = {}) {
+async function writeGms(mnes, fpOut, opt = {}) {
 
-    console.log('尚待開發')
+    //GMS格式使用: Borehole data
+    //http://gmsdocs.aquaveo.com/GMS_User_Manual_10.0_volume4.pdf
+
+    //舊版標題: Name(孔號名稱) X Y Z(分層深度) SoilID(分類編號) HGUID(分類編號) HorizonID
+    //新版標題有變更: SoilID->HGUID, HGUID->MaterialID
+
+    //舊版數據格式範例:
+    //Name X Y Z SoilID HGUID HorizonID
+    //BH-D02 309253.1208 2797847.883 8.65 1 1 27
+    //BH-D02 309253.1208 2797847.883 8.43 2 2 26
+    //BH-D02 309253.1208 2797847.883 8.03 6 6 25
+    //BH-D02 309253.1208 2797847.883 3.45 4 4 24
+    //BH-D02 309253.1208 2797847.883 3.1 6 6 22
+    //BH-D02 309253.1208 2797847.883 2.35 4 4 20
+    //BH-D02 309253.1208 2797847.883 1.65 6 6 19
+    //BH-D02 309253.1208 2797847.883 -0.45 4 4 18
+    //BH-D02 309253.1208 2797847.883 -1.35 6 6 17
+    //BH-D02 309253.1208 2797847.883 -2.05 4 4 14
+    //BH-D02 309253.1208 2797847.883 -2.7 6 6 12
+    //BH-D02 309253.1208 2797847.883 -4.15 4 4 11
+    //BH-D02 309253.1208 2797847.883 -5.0 6 6 9
+    //BH-D02 309253.1208 2797847.883 -7.05 7 7 7
+    //BH-D02 309253.1208 2797847.883 -8.65 8 8 5
+    //BH-D02 309253.1208 2797847.883 -9.15 7 7 2
+    //BH-D02 309253.1208 2797847.883 -9.85 8 8 1
+    //BH-D02 309253.1208 2797847.883 -21.35 8 8 0
+    //BH-D03 309275.1323 2797812.463 9.01 1 1 27
+    //BH-D03 309275.1323 2797812.463 8.91 2 2 26
+    //BH-D03 309275.1323 2797812.463 8.79 6 6 25
+    //BH-D03 309275.1323 2797812.463 6.46 4 4 24
+    //BH-D03 309275.1323 2797812.463 6.01 6 6 22
+    //BH-D03 309275.1323 2797812.463 3.01 6 6 0
+    //BH-D03 309275.1323 2797812.463 -0.99 6 6 0
+    //BH-D03 309275.1323 2797812.463 -2.49 6 6 0
+    //BH-D03 309275.1323 2797812.463 -4.19 7 7 7
+    //BH-D03 309275.1323 2797812.463 -6.04 8 8 5
+    //BH-D03 309275.1323 2797812.463 -21.99 8 8 0
+
+    //注意:
+    //1.孔號不能有非英文與數字
+    //2.每孔樣本要輸出n+1筆，1~n都輸出起始深度，第n+1筆輸出第n筆的結束深度
+
+    //check
+    if (!iseobj(mnes) && !isearr(mnes)) {
+        throw new Error(`mnes is not an effective object or array`)
+    }
+    if (iseobj(mnes)) {
+        mnes = [mnes]
+    }
+
+    //funProcLayers
+    let funProcLayers = get(opt, 'funProcLayers', null)
+
+    //head
+    let head = `name,X,Y,Z,SoilID,HGUID,HorizonID` + '\n'
+
+    //ct
+    let ct = head
+    await pmSeries(mnes, async (v) => {
+
+        //name
+        let name = get(v, 'name', '')
+        if (!isestr(name)) {
+            throw new Error(`invalid name`)
+        }
+
+        //cols
+        let cols = get(v, 'cols', [])
+        if (!isearr(cols)) {
+            throw new Error(`cols is not an effective array`)
+        }
+
+        // //eles
+        // let eles = get(v, 'eles', [])
+        // if (!isearr(eles)) {
+        //     throw new Error(`eles is not an effective array`)
+        // }
+
+        //writeParseCols
+        let c = await writeParseCols(name, cols, funProcLayers)
+
+        //merge
+        ct += c + '\n'
+
+    })
+
+    //writeFileSync
+    fs.writeFileSync(fpOut, ct, 'utf8')
 
     return null
 }
