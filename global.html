@@ -140,7 +140,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line338">line 338</a>
+        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line569">line 569</a>
     </li></ul></dd>
     
 
@@ -222,7 +222,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line114">line 114</a>
+        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line124">line 124</a>
     </li></ul></dd>
     
 
@@ -369,7 +369,7 @@
 
     
 
-    <h4 class="name" id="writeGms"><span class="type-signature type-signature-async">(async) </span>writeGms<span class="signature">(fp, data, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="writeGms"><span class="type-signature type-signature-async">(async) </span>writeGms<span class="signature">(mnes, fpOut, opt<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -385,7 +385,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line322">line 322</a>
+        <a href="WMeshGms.mjs.html">WMeshGms.mjs</a>, <a href="WMeshGms.mjs.html#line466">line 466</a>
     </li></ul></dd>
     
 
@@ -432,7 +432,7 @@
 
     <h5 class="h5-examples">Example</h5>
     
-    <pre class="prettyprint"><code></code></pre>
+    <pre class="prettyprint"><code>let name = 'abc'let cols = [...]let fpOut = '{path of file}'console.log('writing...')writeGms({ name, cols }, fpOut)    .then((r) => {        console.log('finish.')    })    .catch((err) => {        console.log(err)    })</code></pre>
 
 
 
@@ -466,7 +466,46 @@
 
         <tr>
             
-                <td class="name"><code>fp</code></td>
+                <td class="name"><code>mnes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>輸入數據物件或陣列，輸入物件須包含name、cols，輸入陣列時則各元素為物件(name、cols)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fpOut</code></td>
             
 
             <td class="type">
@@ -495,43 +534,7 @@
                 </td>
             
 
-            <td class="description last"><p>輸入檔案位置字串</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>輸入數據陣列，為mat或ltdt格式</p></td>
+            <td class="description last"><p>輸入儲存檔案位置字串</p></td>
         </tr>
 
     
@@ -571,157 +574,7 @@
                 </td>
             
 
-            <td class="description last"><p>輸入設定物件，預設{}</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>mode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>'ltdt'</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>輸入數據格式字串，可選ltdt或mat，預設ltdt</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>keys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>[]</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>輸入指定欲輸出鍵值陣列，預設[]</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>kphead</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>{}</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>輸入指定鍵值轉換物件，預設{}</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"><p>輸入設定物件，預設{}</p></td>
         </tr>
 
     
@@ -789,7 +642,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Mar 23 2024 21:33:10 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Sep 15 2024 17:04:17 GMT+0800 (台北標準時間) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
