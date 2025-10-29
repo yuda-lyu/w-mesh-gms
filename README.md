@@ -12,8 +12,8 @@ A tool for GMS data.
 To view documentation or get support, visit [docs](https://yuda-lyu.github.io/w-mesh-gms/global.html).
 
 ## Installation
+
 ### Using npm(ES6 module):
-> **Note:** w-mesh-gms is mainly dependent on `lodash-es` and `wsemi`.
 ```alias
 npm i w-mesh-gms
 ```

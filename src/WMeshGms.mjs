@@ -351,7 +351,7 @@ async function writeParseCols(cols, funProcLayers) {
         //layers
         let layers = get(col, 'layers', [])
         if (!isearr(layers)) {
-            throw new Error(`col.layersis not an effective array`)
+            throw new Error(`col.layers is not an effective array`)
         }
 
         //rs
