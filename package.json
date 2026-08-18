@@ -1,12 +1,12 @@
 {
   "name": "w-mesh-gms",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "main": "dist/w-mesh-gms.umd.js",
   "dependencies": {
-    "wsemi": "^1.8.76"
+    "wsemi": "^1.8.77"
   },
   "devDependencies": {
-    "w-package-tools": "^1.1.12"
+    "w-package-tools": "^1.1.13"
   },
   "scripts": {
     "test": "mocha --parallel --timeout 60000",
