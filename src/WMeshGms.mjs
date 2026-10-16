@@ -558,7 +558,10 @@ async function writeGms(mnes, fpOut, opt = {}) {
  * @return {Object} 回傳物件，其內有readGms與writeGms函式
  * @example
  *
-
+ * import wmg from 'w-mesh-gms'
+ *
+ * wmg.readGms
+ * wmg.writeGms
  *
  */
 let WMeshGms = {
