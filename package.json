@@ -1,9 +1,9 @@
 {
   "name": "w-mesh-gms",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "main": "dist/w-mesh-gms.umd.js",
   "dependencies": {
-    "wsemi": "^1.9.60"
+    "wsemi": "^1.9.61"
   },
   "devDependencies": {
     "w-package-tools": "^1.1.28"
